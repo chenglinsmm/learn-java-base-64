@@ -1,7 +1,8 @@
 package com.es.edu.learn1;
 
-import com.alibaba.fastjson.JSON;
+import com.es.edu.util.JSONChange;
 import org.apache.http.HttpHost;
+import org.elasticsearch.client.ElasticsearchClient;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
@@ -17,15 +18,18 @@ public class CreateIndex {
                 RestClient.builder(new HttpHost("localhost", 9200, "http")));
 
         // 创建索引 - 请求对象
-        CreateIndexRequest request = new CreateIndexRequest("user2");
+        CreateIndexRequest request = new CreateIndexRequest("teacher");
         // 发送请求，获取响应
         CreateIndexResponse response = client.indices().create(request, RequestOptions.DEFAULT);
-        System.out.println(JSON.toJSONString(response));
+        System.out.println(JSONChange.objToJson(response));
         boolean acknowledged = response.isAcknowledged();
         // 响应状态
         System.out.println("操作状态 = " + acknowledged);
         // 关闭客户端连接
         client.close();
+
+
+
     }
 
 }
