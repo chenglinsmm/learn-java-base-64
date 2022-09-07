@@ -1,0 +1,60 @@
+<configuration>
+
+    <springProperty scope="context" name="springAppName" source="spring.application.name"/>
+    <springProperty scope="context" name="log.level" source="logging.level.root"/>
+    <springProfile name="!local">
+        <property name="log.path" value="/opt/logs/nl-mp-java-service/nl-mp-java-service-user"/>
+    </springProfile>
+    <!--日志文件存储天数-->
+    <property name="log.maxHistory" value="15"/>
+    <!--日志文件大小限制-->
+    <property name="log.maxFileSize" value="500MB"/>
+    <!--日志文件总大小限制-->
+    <property name="log.totalSizeCap" value="50GB"/>
+    <!--彩色日志打印格式-->
+    <property name="log.colorPattern"
+      value="%magenta(%d{yyyy-MM-dd HH:mm:ss}) %highlight(%-5level) %boldCyan([${springAppName:-},%X{X-B3-TraceId:-},%X{X-B3-SpanId:-},%X{X-Span-Export:-}]) %yellow(%thread) %green(%logger) %msg%n"/>
+    <!--普通日志打印格式-->
+    <property name="log.pattern"
+      value="%d{yyyy-MM-dd HH:mm:ss} %-5level [${springAppName:-},%X{X-B3-TraceId:-},%X{X-B3-SpanId:-},%X{X-Span-Export:-},traceId:%X{traceId}]  %thread %logger %msg%n"/>
+    <!--输出到控制台-->
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <!--采用上面定义的彩色日志打印-->
+            <pattern>${log.colorPattern}</pattern>
+        </encoder>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+        </layout>
+    </appender>
+
+    <appender name="appLogAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log.path}/hsh-omp-api.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <MaxHistory>${log.maxHistory}</MaxHistory>
+            <totalSizeCap>${log.totalSizeCap}</totalSizeCap>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>100MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>${log.pattern}</pattern>
+        </layout>
+    </appender>
+
+    <logger name="com.alibaba.nacos.client.naming" level="OFF"/>
+
+    <springProfile name="local">
+        <root level="${log.level}">
+            <appender-ref ref="stdout"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="!local">
+        <root level="${log.level}">
+            <appender-ref ref="stdout"/>
+            <appender-ref ref="appLogAppender"/>
+        </root>
+    </springProfile>
+
+</configuration>
