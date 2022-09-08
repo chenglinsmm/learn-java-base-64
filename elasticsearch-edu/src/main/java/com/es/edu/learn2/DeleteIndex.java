@@ -1,4 +1,4 @@
-package com.es.edu.learn1;
+package com.es.edu.learn2;
 
 import org.apache.http.HttpHost;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
@@ -14,7 +14,7 @@ public class DeleteIndex {
         RestHighLevelClient client = new RestHighLevelClient(
                 RestClient.builder(new HttpHost("localhost", 9200, "http")));
         // 删除索引 - 请求对象
-        DeleteIndexRequest request = new DeleteIndexRequest("teacher");
+        DeleteIndexRequest request = new DeleteIndexRequest("user");
         // 发送请求，获取响应
         AcknowledgedResponse response = client.indices().delete(request, RequestOptions.DEFAULT);
         // 操作结果

@@ -10,17 +10,16 @@ import org.elasticsearch.client.indices.GetIndexResponse;
 
 import java.io.IOException;
 
-public class SearchIndex {
+public class SearchIndexAll {
     public static void main(String[] args) throws IOException {
         // 创建客户端对象
         RestHighLevelClient client = new RestHighLevelClient(
                 RestClient.builder(new HttpHost("localhost", 9200, "http")));
 
         // 查询索引 - 请求对象
-        GetIndexRequest request = new GetIndexRequest("teacher");
+        GetIndexRequest request = new GetIndexRequest("*");
         // 发送请求，获取响应
         GetIndexResponse response = client.indices().get(request, RequestOptions.DEFAULT);
-
 
         System.out.println("indices:" + JSONChange.objToJson(response.getIndices()));
         System.out.println("aliases:" + response.getAliases());
