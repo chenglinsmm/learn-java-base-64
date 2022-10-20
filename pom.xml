@@ -11,7 +11,7 @@
 
     <modules>
         <module>elasticsearch-edu</module>
-        <module>spring-edu</module>
+<!--        <module>spring-framework-5.3.20</module>-->
     </modules>
 
     <name>catalogue-edu</name>
