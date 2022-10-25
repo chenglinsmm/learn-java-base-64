@@ -674,8 +674,11 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 */
 	protected void prepareRefresh() {
 		// Switch to active.
+		// 设置容器启动的时间
 		this.startupDate = System.currentTimeMillis();
+		// 容器的关闭标志位
 		this.closed.set(false);
+		// 容器的激活标志位
 		this.active.set(true);
 
 		if (logger.isDebugEnabled()) {
@@ -688,24 +691,32 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		}
 
 		// Initialize any placeholder property sources in the context environment.
+		// 预留接口，便于子类功能扩展
+		// 可以对系统属性值进行修改（特别注意，如果不存在此属性程序会终止）
+		// getEnvironment().getSystemProperties().put("java.spring.teacher","java.zhao");
 		initPropertySources();
 
 		// Validate that all properties marked as required are resolvable:
 		// see ConfigurablePropertyResolver#setRequiredProperties
+		// 1、检查是否存在环境变量如果存在直接用,不存在重更新获取
+		// 2、创建并获取环境对象、验证需要的属性文件是否符合
 		getEnvironment().validateRequiredProperties();
 
 		// Store pre-refresh ApplicationListeners...
+		// 判断刷新前的应用程序监听器集合是否为空，如果为空，则将监听器添加到此集合中
 		if (this.earlyApplicationListeners == null) {
 			this.earlyApplicationListeners = new LinkedHashSet<>(this.applicationListeners);
 		}
 		else {
 			// Reset local application listeners to pre-refresh state.
+			// 如果不等于空，则清空集合元素对象
 			this.applicationListeners.clear();
 			this.applicationListeners.addAll(this.earlyApplicationListeners);
 		}
 
 		// Allow for the collection of early ApplicationEvents,
 		// to be published once the multicaster is available...
+		// 创建刷新前的监听事件集合
 		this.earlyApplicationEvents = new LinkedHashSet<>();
 	}
 
@@ -726,6 +737,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 */
 	protected ConfigurableListableBeanFactory obtainFreshBeanFactory() {
 		// 1.刷新 BeanFactory，并执行加载和解析配置文件的操作
+		// AbstractRefreshableApplicationContext
 		refreshBeanFactory();
 		// 2.拿到刷新后的 BeanFactory
 		return getBeanFactory();
